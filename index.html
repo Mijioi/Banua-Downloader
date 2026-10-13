@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Banua Download</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;800&display=swap" rel="stylesheet">
+<style>
+body{background:#0e0e0e;color:#fff;font-family:'Outfit',sans-serif;text-align:center;padding:18px;margin:0}
+.header{
+  background:linear-gradient(135deg,#25F4EE,#FE2C55);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  font-size:28px;font-weight:800;letter-spacing:1px;
+  margin:20px 0 5px 0;
+  text-shadow:0 0 20px rgba(37,244,238,0.3);
+}
+.sub{color:#777;font-size:12px;letter-spacing:2px;margin-bottom:18px}
+.box{background:#1a1a1a;padding:18px;border-radius:20px;max-width:500px;margin:auto;border:1px solid #242424;box-shadow:0 10px 30px rgba(0,0,0,0.5)}
+.input-wrap{position:relative;display:flex;align-items:center}
+.input-wrap input{
+  width:100%;padding:14px 45px 14px 14px;border-radius:12px;border:1px solid #2a2a2a;
+  background:#0f0f0f;color:#fff;font-size:14px;outline:none;box-sizing:border-box
+}
+.input-wrap input:focus{border-color:#25F4EE}
+.clear-btn{
+  position:absolute;right:8px;width:32px;height:32px;border-radius:8px;
+  background:#2a2a2a;color:#fff;border:none;cursor:pointer;font-size:16px;
+  display:none;align-items:center;justify-content:center
+}
+.btn-main{
+  width:100%;padding:14px;margin-top:14px;
+  background:linear-gradient(90deg,#FE2C55,#ff0050);
+  color:#fff;border:none;border-radius:12px;font-weight:800;font-size:15px;letter-spacing:0.5px;
+  cursor:pointer;box-shadow:0 4px 15px rgba(254,44,85,0.3)
+}
+video{width:100%;border-radius:14px;margin-top:14px;background:#000}
+a.dl{
+  display:block;margin-top:14px;padding:14px;
+  background:#fff;color:#000;border-radius:12px;text-decoration:none;
+  font-weight:800;font-size:15px;letter-spacing:0.5px
+}
+</style></head>
+<body>
+
+<div class="header">BANUA DOWNLOAD</div>
+<div class="sub">TIKTOK • IG • YOUTUBE</div>
+
+<div class="box">
+  <div class="input-wrap">
+    <input id="url" placeholder="Paste link di sini..." oninput="toggleClear()" autocomplete="off">
+    <button class="clear-btn" id="clearBtn" onclick="clearInput()">✕</button>
+  </div>
+  <button class="btn-main" onclick="go()">DOWNLOAD SEKARANG</button>
+  <div id="result"></div>
+</div>
+
+<script>
+function toggleClear(){
+  let v=document.getElementById('url').value;
+  document.getElementById('clearBtn').style.display = v ? 'flex' : 'none';
+}
+function clearInput(){
+  document.getElementById('url').value='';
+  toggleClear();
+  document.getElementById('result').innerHTML='';
+  document.getElementById('url').focus();
+}
+async function go(){
+ let link=document.getElementById('url').value.trim();
+ if(!link) return alert('Paste link dulu!');
+ document.getElementById('result').innerHTML='<p style="color:#888;margin-top:15px">⏳ Proses... gabungin suara</p>';
+ try{
+  let r=await fetch('/dl?url='+encodeURIComponent(link));
+  let j=await r.json();
+  if(j.file){
+    document.getElementById('result').innerHTML=`<video controls autoplay src="${j.file}"></video><a class="dl" href="${j.file}" download>DOWNLOAD</a>`;
+  }else{
+    document.getElementById('result').innerHTML='❌ '+ (j.error||'Gagal');
+  }
+ }catch(e){
+   document.getElementById('result').innerHTML='❌ '+e.message;
+ }
+}
+</script>
+</body></html>
